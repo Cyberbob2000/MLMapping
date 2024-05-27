@@ -19,14 +19,14 @@
 #include <all_utils.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <rviz_vis.h>
-// #include <msg_awareness2local.h>
-// #include <msg_awareness.h>
+#include <msg_awareness2local.h>
+#include <msg_awareness.h>
 #include <cv_bridge/cv_bridge.h>
 
 #include <geometry_msgs/TransformStamped.h>
 
 #include <pcl/filters/voxel_grid.h>
-// #include <msg_localmap.h>
+#include <msg_localmap.h>
 
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -51,8 +51,8 @@ private:
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, nav_msgs::Odometry, sensor_msgs::Imu> ApproxSyncPolicyOdom;
     message_filters::Synchronizer<ApproxSyncPolicyOdom> *OdomapproxSync_;
     // publisher
-    // msg_awareness2local *a2w_pub;
-    // msg_awareness *awarenessmap_pub;
+    msg_awareness2local *a2w_pub;
+    msg_awareness *awarenessmap_pub;
     tf2_ros::TransformBroadcaster br;
     // Timer
     ros::Timer inflate_timer_, tf_timer_;
@@ -70,7 +70,7 @@ private:
     geometry_msgs::TransformStamped transformStamped_T_bs;
     // original in local map node:
 
-    // msg_localmap *localmap_pub;
+    msg_localmap *localmap_pub;
     rviz_vis *globalmap_publisher;
     rviz_vis *frontier_publisher;
     rviz_vis *odds_publisher;

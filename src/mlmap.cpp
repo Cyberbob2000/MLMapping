@@ -8,7 +8,7 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
     string configFilePath;
     nh.getParam("/mlmapping_configfile", configFilePath);
     inflate_global_n = getIntVariableFromYaml(configFilePath, "mlmapping_inflate_global_n");
-    cout << "config file path: " << configFilePath << endl;
+
     camera2odom_latency = getDoubleVariableFromYaml(configFilePath, "camera2odom_latency");
     // init map
     pc_sample_cnt = getIntVariableFromYaml(configFilePath, "mlmapping_sample_cnt");
@@ -17,6 +17,7 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
     fx_ = getDoubleVariableFromYaml(configFilePath, "mlmapping_cam_fx");
     fy_ = getDoubleVariableFromYaml(configFilePath, "mlmapping_cam_fy");
     if_visualize_odds = getBoolVariableFromYaml(configFilePath, "visualize_odds");
+
     awareness_map = new awareness_map_cylindrical();
 
     Mat4x4 T_bs_mat = Mat44FromYaml(configFilePath, "T_B_S");
@@ -80,7 +81,7 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
                         static_cast<float>(getDoubleVariableFromYaml(configFilePath, "mlmapping_lm_measurement_miss")),
                         static_cast<float>(getDoubleVariableFromYaml(configFilePath, "mlmapping_lm_occupied_sh")),
                         getBoolVariableFromYaml(configFilePath, "use_exploration_frontiers"));
-    // local_map->allocate_memory_for_local_map();
+    //local_map->allocate_memory_for_local_map();
     local_map->inflate_n = getIntVariableFromYaml(configFilePath, "mlmapping_inflate_n");
     local_map->apply_inflate = getBoolVariableFromYaml(configFilePath, "mlmapping_apply_inflate");
     cout << "local map initialize finish!" << endl;
@@ -99,14 +100,14 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
     visulize_raycasting = getBoolVariableFromYaml(configFilePath, "visulize_raycasting");
 
     // independ modules:
-    // enable_project2d = getBoolVariableFromYaml(configFilePath, "use_projected_2d_map");
-    // occupancy_grid_publisher = new Local2OccupancyGrid2D(nh, "/occupancy_map", 2);
+    enable_project2d = getBoolVariableFromYaml(configFilePath, "use_projected_2d_map");
+    occupancy_grid_publisher = new Local2OccupancyGrid2D(nh, "/occupancy_map", 2);
 
-    // occupancy_grid_publisher->setLocalMap(local_map,
-    //                                       getStringFromYaml(configFilePath, "world_frame_id"),
-    //                                       getBoolVariableFromYaml(configFilePath, "use_relative_height"),
-    //                                       getDoubleVariableFromYaml(configFilePath, "projected_2d_map_max_z"),
-    //                                       getDoubleVariableFromYaml(configFilePath, "projected_2d_map_min_z"));
+    occupancy_grid_publisher->setLocalMap(local_map,
+                                           getStringFromYaml(configFilePath, "world_frame_id"),
+                                           getBoolVariableFromYaml(configFilePath, "use_relative_height"),
+                                           getDoubleVariableFromYaml(configFilePath, "projected_2d_map_max_z"),
+                                           getDoubleVariableFromYaml(configFilePath, "projected_2d_map_min_z"));
     // enable_esfds = getBoolVariableFromYaml(configFilePath, "use_esdfs");
     // esdfs_publisher = new Local2ESDFsBatch(nh, "/esdfs_aaa", 2);
     // esdfs_publisher->setLocalMap(local_map,
@@ -119,8 +120,9 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
     // timer_ = nh.createTimer(ros::Duration(0.1), &mlmap::timerCb, this);
 
     // publisher
-    // localmap_pub = new msg_localmap();
-    // localmap_pub = new msg_localmap(nh, "/mlmapping_local");
+    localmap_pub = new msg_localmap();
+    localmap_pub = new msg_localmap(nh, "/mlmapping_local");
+    
 
     globalmap_publisher = new rviz_vis();
     globalmap_publisher->set_as_global_map_publisher(nh, "/global_map",
@@ -146,6 +148,8 @@ void mlmap::init_map(ros::NodeHandle &node_handle)
     this->tf_timer_ = nh.createTimer(ros::Duration(0.1), std::bind(&mlmap::tf_timerCb, this));
     this->inflate_timer_ = nh.createTimer(ros::Duration(0.2), std::bind(&mlmap::inflate_timerCb, this));
     cout << "ApproxSyncPolicy message filter settled!" << endl;
+
+    cout << "DEBUG !!!!" << endl;
 }
 
 void mlmap::inflate_timerCb()

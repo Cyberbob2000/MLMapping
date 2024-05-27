@@ -32,16 +32,16 @@ mlmapping_depth_noise_coe: 0.000001   # must > 0. noise model, the variance of d
 # camera2odom_latency: 0.085 # the latency (second) of the depth image minus the latency of the odom (imu). It can be estimated by the method in Dr. Han Chen's PHD thesis
 camera2odom_latency: 0.001 # for gazebo simulation
 
-use_exploration_frontiers: false
-visualize_odds: false
+use_exploration_frontiers: true
+visualize_odds: true
 mlmapping_sample_cnt:       500
 
 mlmapping_inflate_n:        2 # inflate size: mlmapping_subbox_d_xyz * mlmapping_inflate_n. It must smaller than mlmapping_subbox_n
 mlmapping_inflate_global_n: 2 # global inflate range: +-mlmapping_subbox_d_xyz * mlmapping_subbox_n * mlmapping_inflate_global_n
 mlmapping_apply_inflate:    true
 mlmapping_use_raycasting:   true
-mlmapping_enable_esdfs:     false
-mlmapping_enable_2d_grid:   false
+mlmapping_enable_esdfs:     true
+mlmapping_enable_2d_grid:   true
 
 publish_T_wb:      true
 publish_T_bs:      true
@@ -67,13 +67,13 @@ projected_2d_map_min_z: -0.3
 projected_2d_map_max_z:  0.3
 
 #generate esdfs
-use_esdfs: false
+use_esdfs: true
 esdfs_n_xy:              35
 esdfs_n_z:               13
 batch_max_search_range:  10
 
 #visulization
-visulize_raycasting: false
+visulize_raycasting: true
 
 
 
